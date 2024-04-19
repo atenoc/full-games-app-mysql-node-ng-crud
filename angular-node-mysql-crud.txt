@@ -1,0 +1,93 @@
+
+
+* CONFIGURACION DE ARCHIVOS PARA EL SERVIDOR
+
+1. Crear la carpeta packaje.jos dentro de /server
+->  npm init --yes
+
+2. Instalar los módulos que utilizaremos en el servidor
+->  npm i express morgan promise-mysql cors
+
+// express: Módulo para crear aplicaciones de servidor con Node JS sin crear los componentes manualmente
+// morgan: Módulo para ver en consola las peticiones de la aplicacion (GET, POST, PUT, DELETE)
+// promise-mysql: Módulo que da soporte a promesas de javascript (módulo de conexión)
+// cors: Módulo que sirve para la comunicación entre 2 servidores, el de Angular y el de la API Rest
+            (poder pedir los datos desde Angular al Servidor)
+
+3. Crear la carpeta src dentro de /server
+    Dentro crear index.ts
+
+4. Crear archivo de configuración de TypeScript (tsconfig.json)
+->  tsc --init
+
+    - Cambiar a ecma script 6
+    - Descomentar outDir: En dónde va a colocar el código TypeScript (carpeta build, dentro de /server)
+
+    teclear -> tsc
+    // Se creará la carpeta build, del código TS traducido a JS 
+    // En producción será la carpeta que se ejecutará
+
+5. Creamos el comando build (Para agilizar el proceso de conversion al momento de guardar cambios)
+
+    En el archivo package.json colocar: 
+    - "build": "tsc -w"
+    -> npm run build
+
+6. Instalar en módulo nodemon
+    -> npm i nodemon -D
+
+    En el archivo package.json colocar: 
+    - "dev": "nodemon build/index.js"
+    -> En otra terminal 
+    -> npm run dev
+
+
+* CREANDO EL SERVIDOR
+
+1. Instalar @types/express
+    -> npm i @types/express -D
+
+    - Configurar el Servidor (index.ts)
+
+    -Instalar npm i @types/morgan @types/cors -D
+
+* Se instaló 
+    "promise-mysql": "^4.1.3"
+
+* Cambiar a la version 3.3.1
+    ->npm i promise-mysql@3.3.1
+
+* Dar Privilegios a mysql
+    En MySQL Workbench: 
+    -> ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root'
+
+    Donde rootcomo su usuario localhostcomo su URL y passwordcomo su contraseña
+
+    Luego ejecute esta consulta para actualizar los privilegios:
+    -> flush privileges;
+
+
+* ERRORES:
+
+1. Unhandled rejection Error: ER_NOT_SUPPORTED_AUTH_MODE: Client does not support authentication protocol requested by server; 
+    consider upgrading MySQL client at Handshake.Sequence._packetToError
+
+    En Workbech ejecutar: 
+    
+    ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';
+    flush privileges;
+
+2. UnhandledPromiseRejectionWarning: Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+    at ServerResponse.setHeader (_http_outgoing.js:485:11)
+
+    Este tipo de error lo obtendrá cuando pase declaraciones después de enviar una respuesta.
+
+    Por ejemplo:
+
+    res.send("something response");
+    console.log("jhgfjhgsdhgfsdf");
+    console.log("sdgsdfhdgfdhgsdf");
+    res.send("sopmething response");
+    Dará como resultado el error que está viendo, porque una vez que se ha enviado la respuesta, res.sendno se ejecutará lo siguiente.
+
+    Si quieres hacer algo, debes hacerlo antes de enviar la respuesta.
